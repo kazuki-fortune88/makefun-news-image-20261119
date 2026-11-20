@@ -7,15 +7,143 @@ Run: `mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts` · Referral code: `4f
 
 ---
 
-# News Image — Thursday 19 November 2026 (v7)
+# News Image — Thursday 19 November 2026 (v9)
 
 Front page of Thursday 19 November 2026 world news: 12 panels + 31 "also"
-items = **43 stories**, 1024×1024 PNG, **192,771 bytes**, SHA-256
-`8f9f286fe0fa7378740be8a9b470d4f3c10d7c71946e7fb7142b2c747e369c8f`.
+items = **43 stories**, 1024×1024 PNG, **199,205 bytes**, SHA-256
+`4738a580c9c626644b3a1fa9b8ef0fe69f0edb5a0d90493a66c6e9140e5792ed`.
 
 Built by `generate.py` (deterministic PIL + DejaVu renderer: no network, no
 timestamps, no randomness). `main.ts` (Node stdlib only) copies `entry.png`
 to `$MAKEFUN_OUTPUT_DIR/entry.png`.
+
+## What changed vs v8 (43 stories, SHA 04bbdca8…, 199,540 bytes)
+
+**Targeted date fix, NOT a redesign.** The mock judge (12 blind verdicts vs
+the current top 5 + v7, report
+`~/workspace/makefun/research/mock-judge-v8-REPORT.md`) ruled v8 WORTHY but
+said DO NOT submit it as-is: it found **5 ALSO items with wrong dates**.
+v9 replaces exactly those 5, plus the two number fixes the audit flagged.
+Layout, hero, subhead, map/pins, UTC strip and the DATE CHECK footer text
+are unchanged. Still 12 panels + 31 ALSO = 43 stories.
+
+| Slot | Dropped (why out) | Replacement (verified 19 Nov) |
+|---|---|---|
+| #29 | Spain: police clash with strikers — the general strike was **11 Nov** (Al Jazeera 11 Nov); no general strike in Spain on 19 Nov | **Berlin allies pledge €70bn Ukraine aid** — Coalition of the Willing joint statement, Berlin, 19 Nov 2026 (German Federal Government, 2026-11-19 statement; EU Today; NATO allies pledge €70bn military aid for 2026 + equivalent 2027; EU €90bn loan through 2027). Stays EU. |
+| #34 | Zelensky urges US to lift Starshield limits — Zelensky's statement was **15 Nov** (X post); only updates of the old article circulated on 19 Nov | **Somalia expels UAE ambassador** — Council of Ministers ordered the UAE ambassador out within 72 hours and recalled its envoy, Thu 19 Nov (Reuters 19 Nov; AP "on Thursday"; Addis Standard 19 Nov). Also closes a selection gap: 4 of the 5 rivals carry it. **Region changes EU → AFRICA** (see strip recount below). |
+| #35 | Fiji declares disaster over El Niño drought — declared **18 Nov** (PM Rabuka's Wednesday address; Reuters 19 Nov) | **Tonga declares 27-day drought emergency** — Acting PM Latu's 28-day state of emergency, effective 11:00 Thu 19 Nov, Gazette Extraordinary No. 219 dated 19 Nov 2026 (PINA; Tonga NDRMO; US Embassy Tonga weather alert 19 Nov). Stays OC. |
+| #40 | UNHCR halts refugee registration in Malaysia — UNHCR: "With effect from **18 November 2026**… has ceased" (FMT 18 Nov) | **Mongolia MPs accept president's resignation** — State Great Khural voted Thu 19 Nov, 96 of 104 present, to accept President Khurelsukh's resignation (AP "on Thursday"; Montsame 19 Nov; The True Post). Note: the 18 Nov vote was only the Standing Committee's endorsement (Xinhua 18 Nov); the plenary vote was 19 Nov. Stays AS. |
+| #41 | Bolivia El Niño emergency: 78,000 families hit — emergency decree signed **31 Oct** (Supreme Decree 5759; reported 1 Nov, Al Jazeera/DW), 19 days stale | **Dow plunges 1,101 points** — Dow −1,101.11 (−2.19%) to 49,097.06, Thu 19 Nov close (WSJ; AP Thu Nov 19; Morningstar 19 Nov 16:28 ET). Stays AM. |
+
+**Stats strip (2 changes):**
+- "15.9m GTA VI pre-orders" → **"19.1m"** — the 15.9m figure was 17 Nov
+  (Sensor Tower: 15.88m 17 Nov; 17.1m noon 18 Nov; **19.05m Thursday
+  morning 19 Nov**, Reuters via GamesBeat/80.lv; 24.6m by end of 19 Nov).
+- "78,000 Bolivia families hit" → **"1,101 Dow points lost"** — the Bolivia
+  stat had to go with the dropped #41 story; the new stat echoes the new
+  #41, the same echo pattern Bolivia had.
+
+**Panel 6 (ICJ):** headline now reads "Myanmar guilty of Rohingya genocide
+**(9–6)**" — the 9–6 vote all five rivals display, added to the headline
+(2 lines, same as before) so the body text is untouched and there is no
+overflow. Body still: "The ICJ finds genocidal intent in 2017; ~10,000
+killed, 730,000 fled. Final and binding."
+
+**Region strip recount (still 43):** MIDDLE EAST 4, AMERICAS 13, ASIA 10,
+**EUROPE 4** (was 5 — #34 left), **AFRICA 4** (was 3 — #34 Somalia joined),
+OCEANIA 2, WORLD 6. Per-item map: ME = panels 2, 9 + ALSO 16, 23;
+AM = panels 3, 4, 12 + ALSO 17, 19, 25, 26, 30, 32, 36, 39, 41, 43;
+AS = panels 1, 5, 6, 10 + ALSO 14, 15, 21, 24, 37, 40;
+EU = panel 8 + ALSO 13, 29, 31; AF = ALSO 18, 22, 34, 42;
+OC = panel 11 + ALSO 35; WO = panel 7 + ALSO 20, 27, 28, 33, 38.
+
+**DATE CHECK footer: NOT extended.** It is already full (984px of 996) —
+the 5 dropped items above are documented here instead of being forced onto
+the line. Footer text unchanged from v8.
+
+**Deliberately KEPT (borderline, defensible — per the mock-judge audit):**
+#9 Trump weighs new strikes on Iran (NYT 18 Nov US, spread widely 19 Nov
+02:31–09:55Z; panel, low risk), #19 Senators warn AI cyber threats
+(letter sent 18 Nov; covered 19 Nov), #38 US–Philippines pact (White House
+fact sheet late Wednesday 18 Nov US = Thursday 19 Nov morning Manila).
+The other 38 stories, the Shenzhen hero, the KTT-leading subhead, the
+template, the map + pins and the UTC strip are all unchanged from v8.
+
+### Verification (v9, all passed)
+- `python3 generate.py` three times: byte-identical, SHA `4738a580…`,
+  **199,205 bytes** (< 350 KB), **no OVERFLOW** (panels, ALSO lines,
+  footer, subhead, UTC strip all within limits — panel 6 headline still
+  2 lines with "(9–6)"; every new ALSO line fits its 300px column).
+- `main.ts` (`MAKEFUN_OUTPUT_DIR` set): byte-identical copy, same SHA;
+  `main.ts` and `LICENSE` are byte-identical to v7/v8.
+- Visual QA: full image + 300px downscale reviewed. No text collisions;
+  no panel text spills past its border; region strip reads EUROPE 4 /
+  AFRICA 4 and sums to 43; stats strip reads 19.1m and 1,101; at 300px
+  the masthead date, hero headline ("Three leaders meet in Shenzhen"),
+  stats numbers and panel headlines stay legible; the ALSO list is
+  present at 10px (same as v8 and the winners' lists).
+- Story count: 12 panels + 31 ALSO = 43; region strip sums to 43; pins
+  1–12 all placed.
+
+## What changed vs v7 (43 stories, SHA 8f9f286f…, 192,771 bytes)
+
+**PRESENTATION ONLY — no story text, date, source, region count, stat,
+map pin, ALSO item or footer word changed.** All 43 stories are identical
+to v7. The brief: a LIVING hero highlight and a BOLD editorial decision,
+with the hottest news up front. The current top 3 entries all use three
+equal top panels; v8 breaks that pattern with a hero band.
+
+- **Hero band (row 1, 170px tall, was 158px):** panel 1 (Shenzhen
+  trilateral summit) is **460px wide** (was 325px) — 64% more area than a
+  standard panel — with a NEW dynamic illustration: warm sunset bands, a
+  big low sun, the Shenzhen skyline with the Ping An spire, three flag
+  poles (US / China / Russia) and three seated leaders at one table with
+  TRUMP / XI / PUTIN name plates. Headline **24px on one line** (was 21px
+  over two lines), kicker 14px, warm cream panel background, **3px gold
+  border**. Panels 2 (Gaza) and 3 (GTA VI) are 263px wide in the same
+  taller band, so the three hottest stories of the day read as one strong
+  top tier; their illustrations are unchanged in size but Gaza's explosion
+  glow is enlarged and GTA's sunset deepened.
+- **Masthead subhead now leads with the summit** (parent decision, 20 Nov):
+  "TOP OF THE DAY — THREE LEADERS MEET IN SHENZHEN · ICJ FINDS MYANMAR
+  GUILTY OF GENOCIDE · COP31 DRAFT DROPS $120BN" (was ICJ first, then
+  "COP31'S FINAL 48 HOURS", then Iran). No story text changed — all three
+  items are already panel headlines (1, 6, 7); the subhead now matches the
+  hero instead of contradicting it. Rebuilt 3× after the edit: byte-identical,
+  SHA `04bbdca8…`, 199,540 bytes, no OVERFLOW.
+- **Panel 6 (ICJ) strengthened:** gold sun in the sky, gold side accents
+  framing the courthouse, warm ivory columns, red base line — the verdict
+  panel now glows instead of sitting flat navy. GTA VI stays a strong
+  secondary panel in the hero band.
+- **Layout:** rows 2–4 keep the 3×325px grid at 147px (4px gaps now, was
+  5px). Masthead, UTC strip, region strip, stats strip, map, ALSO list
+  and DATE CHECK footer are untouched except a +5px vertical shift below
+  the panels (stats rules 765/805, bottom headers 812, ALSO/map from 832,
+  footer 1012) — all within the 1024px page.
+- **Why a spanning hero was not used:** a 2-column hero would need 13
+  grid slots for 12 panels, which does not fit with 31 ALSO items + map +
+  stats in 1024px; the 460px-wide hero band is the widest dominant lead
+  the page allows without cutting content.
+
+### Verification (v8, all passed)
+- `python3 generate.py` three times: byte-identical, SHA `04bbdca8…`,
+  **199,540 bytes** (< 350 KB), **no OVERFLOW** (panels, ALSO lines,
+  footer, subhead, UTC strip all within limits — hero passes its
+  overflow check with 2px of margin; Gaza body is 3 lines at 13px in
+  its 263px panel and fits with 5px to spare).
+- `main.ts` (`MAKEFUN_OUTPUT_DIR` set): byte-identical copy, same SHA;
+  `main.ts` and `LICENSE` are byte-identical to v7.
+- Visual QA: full image + hero/ICJ/Gaza/map crops + 300px downscale
+  reviewed. No text collisions; no panel text spills past its border;
+  hero leaders/flags/name plates read clearly; map pins 1–12 all placed
+  and uncollided; footer fits on one line; at 300px the masthead date,
+  hero headline ("Three leaders meet in Shenzhen"), stats numbers and
+  panel headlines stay legible; the ALSO list is present at 10px (same
+  as v7 and the winners' lists).
+- Story count: 12 panels + 31 ALSO = 43; region strip sums to 43; pins
+  1–12 all placed. Content identical to v7 (verified: PANELS_TOP/MID/
+  LOW/ROW4, ALSO, REGIONS, STATS, PINS and footer text unchanged in
+  `generate.py`).
 
 ## What changed vs v6 (43 stories, SHA 9b59b812…, 193,440 bytes)
 
@@ -135,15 +263,14 @@ OC = panel 11 + ALSO 35; WO = panel 7 + ALSO 20, 27, 28, 33, 38.
   1–12 all placed.
 
 ## Recommendation
-**Submit v7, not v6** — v7 fixes the two residual ALSO errors the v6
-head-to-head found in kept items (#16 Gaza amputees, 4 Nov; #27
-Microsoft/ByteDance, 18 Nov) and rewords the stats strip so "$120bn
-COP31 goal cut" matches panel 7. v6 tested **4W–0L–1D vs the current
-top 5** (see `~/workspace/makefun/research/head-to-head-v6-19nov.md`)
-and remains the fallback if the submit pipeline rejects v7 for any
-reason; v7 only removes two ALSO errors, so it cannot score worse than
-v6 on the same pairings. Do not submit v5 (2W–3L on re-test), v4 (loses
-the head-to-head), v3 (Van Gogh date error) or v2 (four date errors).
+**Submit v8 only if it wins the head-to-head vs the current top 5.**
+v7 is already submitted as round 1 (submission 01a1f6f6…, commit 700fc72)
+and its provisional score is still pending; v7 remains the fallback if
+v8 does not beat it. v8 only changes presentation — the 43 stories are
+identical to v7 — so its head-to-head result turns on whether the hero
+band reads as more alive and bolder than v7's equal top row. Do not
+submit v6 (2 residual ALSO errors), v5 (2W–3L on re-test), v4 (loses the
+head-to-head), v3 (Van Gogh date error) or v2 (four date errors).
 
 ## What changed vs v4 — the v5 redesign (43 stories, SHA ec409926…)
 
@@ -363,7 +490,7 @@ Do not submit v3 (Van Gogh date error), v4 (loses the head-to-head) or v2
 (four date errors).
 
 ## Files
-- `entry.png` — the entry image (192,771 bytes)
+- `entry.png` — the entry image (199,205 bytes)
 - `generate.py` — deterministic renderer
 - `main.ts` — copies entry.png to the output dir
 - `README.md` — this file

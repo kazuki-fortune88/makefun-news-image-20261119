@@ -1,5 +1,30 @@
 #!/usr/bin/env python3
-"""Generate the front-page image for Thursday 19 November 2026. (v7)
+"""Generate the front-page image for Thursday 19 November 2026. (v8)
+
+v8 vs v7: PRESENTATION ONLY — no story text, date, source, region count,
+stat, map pin, ALSO item or footer word changed (all 43 stories identical).
+The brief: a LIVING hero highlight and a BOLD editorial decision, with the
+hottest news up front. The top-3 entries all use three equal top panels;
+v8 breaks that pattern with a hero band:
+
+- Row 1 is now a HERO band (170px tall, was 158px): panel 1 (Shenzhen
+  trilateral summit) is 460px wide (was 325px) — 64% more area than a
+  standard panel — with a NEW dynamic illustration (sunset sky, Shenzhen
+  skyline with the Ping An spire, three seated leaders at one table with
+  US/China/Russia flags and TRUMP / XI / PUTIN name plates), a 24px
+  one-line headline (was 21px over two lines), a warm cream panel
+  background and a 3px gold border. Panels 2 (Gaza) and 3 (GTA VI) are
+  263px wide in the same taller band, so the three hottest stories of
+  the day read as one strong top tier.
+- Panel 6 (ICJ) illustration strengthened: gold sunburst behind the
+  courthouse pediment, warmer ivory columns — the verdict panel now
+  glows instead of sitting flat navy. Gaza's explosion glow enlarged
+  and GTA's sunset deepened (same illustrations, stronger colour).
+- Rows 2-4 keep the 3x325px grid at 147px (4px gaps now, was 5px);
+  masthead, UTC strip, region strip, stats strip, map, ALSO list and
+  DATE CHECK footer are untouched except a +5px vertical shift below the
+  panels (stats rules 765/805, bottom headers 812, ALSO/map from 832,
+  footer 1012) — all within the 1024px page, no overflow.
 
 v7 vs v6: targeted fix of the TWO residual ALSO errors the v6 head-to-head
 (4W-0L-1D vs the current top 5) found in kept items. #16 Gaza child
@@ -216,6 +241,107 @@ def ill_shenzhen(d, box):
                                                    (213, 0, 50, 255)])
 
 
+def _mini_flag(d, x, y, kind):
+    """20x10 flag for the hero poles: 'us' | 'cn' | 'ru'."""
+    w, h = 20, 10
+    if kind == "us":
+        for i in range(5):
+            d.rectangle([x, y + i * 2, x + w, y + i * 2 + 2],
+                        fill=(178, 34, 52, 255) if i % 2 == 0 else (255, 255, 255, 255))
+        d.rectangle([x, y, x + 8, y + 5], fill=(40, 60, 130, 255))
+    elif kind == "cn":
+        d.rectangle([x, y, x + w, y + h], fill=(222, 41, 16, 255))
+        d.ellipse([x + 3, y + 2, x + 7, y + 6], fill=(255, 222, 60, 255))
+    else:  # ru
+        for i, c in enumerate([(255, 255, 255, 255), (0, 57, 166, 255), (213, 0, 50, 255)]):
+            d.rectangle([x, y + i * h / 3, x + w, y + (i + 1) * h / 3], fill=c)
+    d.rectangle([x, y, x + w, y + h], outline=(0, 0, 0, 255), width=1)
+
+
+def _leader(d, cx, head_y, skin, hair, suit, tie):
+    """One seated leader bust: head + hair + shoulders + tie. head_y is the
+    head centre; shoulders run to head_y+22, the table covers below that,
+    so ~14px of shoulders stay visible above the table line."""
+    r = 12
+    # shoulders (trapezoid, wider at the bottom)
+    d.polygon([(cx - 14, head_y + 8), (cx + 14, head_y + 8),
+               (cx + 21, head_y + 22), (cx - 21, head_y + 22)], fill=suit)
+    # tie
+    d.polygon([(cx - 3, head_y + 9), (cx + 3, head_y + 9), (cx, head_y + 20)],
+              fill=tie)
+    # head
+    d.ellipse([cx - r, head_y - r, cx + r, head_y + r], fill=skin)
+    # hair cap (top of the head)
+    d.pieslice([cx - r, head_y - r, cx + r, head_y + r], 180, 360, fill=hair)
+    d.rectangle([cx - r, head_y - 2, cx + r, head_y + 1], fill=hair)
+
+
+def ill_shenzhen_hero(d, box):
+    """HERO: three leaders at one table under a Shenzhen sunset.
+    Warm bands, big low sun, tower skyline with the Ping An spire,
+    three flag poles, three seated leaders with name plates.
+    Box is ~456x84 (the hero illustration strip)."""
+    x0, y0, x1, y1 = box
+    w = x1 - x0
+    h = y1 - y0
+    base = y0 + h  # table line
+    # warm sunset bands
+    d.rectangle([x0, y0, x1, y0 + 32], fill=(226, 106, 32, 255))
+    d.rectangle([x0, y0 + 32, x1, y0 + 55], fill=(240, 172, 58, 255))
+    d.rectangle([x0, y0 + 55, x1, y1], fill=(250, 214, 138, 255))
+    # big low sun with glow, right of centre
+    sx, sy = x0 + int(w * 0.72), y0 + 20
+    d.ellipse([sx - 20, sy - 20, sx + 20, sy + 20], fill=(255, 228, 150, 255))
+    d.ellipse([sx - 13, sy - 13, sx + 13, sy + 13], fill=(255, 205, 80, 255))
+    # Shenzhen skyline (dark navy silhouette, base at the table line - 18)
+    horizon = base - 18
+    towers = [(8, 20, 22), (34, 16, 30), (56, 24, 18), (86, 18, 26),
+              (110, 26, 20), (142, 20, 30), (168, 24, 16), (198, 18, 26),
+              (222, 28, 20), (256, 20, 32), (282, 24, 18), (312, 18, 26),
+              (336, 26, 22), (368, 20, 28), (394, 24, 18), (424, 20, 24)]
+    for (tx, tw, th) in towers:
+        d.rectangle([x0 + tx, horizon - th, x0 + tx + tw, horizon],
+                    fill=(38, 52, 86, 255))
+        for wy in range(horizon - th + 5, horizon - 3, 9):
+            for wx in range(x0 + tx + 4, x0 + tx + tw - 3, 8):
+                if (wx * 7 + wy * 13) % 5 < 2:
+                    d.rectangle([wx, wy, wx + 2, wy + 3], fill=(255, 214, 130, 255))
+    # Ping An spire (tall, pointed) between the centre and right leaders
+    spx = x0 + 300
+    d.polygon([(spx, y0 + 6), (spx + 7, horizon), (spx + 14, horizon)],
+              fill=(38, 52, 86, 255))
+    d.rectangle([spx + 2, y0 + 14, spx + 12, horizon], fill=(38, 52, 86, 255))
+    # flag poles behind the leaders (rise from the table to the sky)
+    leaders = [
+        # (cx fraction, skin, hair, suit, tie, flag, plate)
+        (0.22, (232, 190, 150, 255), (240, 210, 120, 255), (30, 45, 80, 255),
+         (180, 40, 40, 255), "us", "TRUMP"),
+        (0.50, (235, 200, 165, 255), (30, 30, 30, 255), (35, 35, 40, 255),
+         (180, 40, 40, 255), "cn", "XI"),
+        (0.78, (228, 185, 150, 255), (210, 200, 180, 255), (25, 40, 70, 255),
+         (40, 80, 160, 255), "ru", "PUTIN"),
+    ]
+    for (fx, skin, hair, suit, tie, flag, plate) in leaders:
+        cx = x0 + int(w * fx)
+        # pole + flag (pole just left of the leader's head)
+        px = cx - 22
+        d.rectangle([px, y0 + 8, px + 2, horizon], fill=(40, 40, 40, 255))
+        _mini_flag(d, px + 2, y0 + 8, flag)
+        # seated bust (head centre y0+44, r=12; shoulders to y0+66, the
+        # table covers below that, so ~14px of suit stays visible)
+        _leader(d, cx, y0 + 44, skin, hair, suit, tie)
+    # long table across the bottom (covers the busts below y0+66)
+    d.rectangle([x0, base - 18, x1, y1], fill=(96, 44, 32, 255))
+    d.rectangle([x0, base - 18, x1, base - 16], fill=(201, 162, 39, 255))
+    # name plates on the table
+    for (fx, skin, hair, suit, tie, flag, plate) in leaders:
+        cx = x0 + int(w * fx)
+        d.rectangle([cx - 18, base - 13, cx + 18, base - 4],
+                    fill=(255, 255, 255, 255), outline=(60, 55, 45, 255), width=1)
+        d.text((cx, base - 9), plate, font=F_SANS_B(7), fill=(22, 22, 22, 255),
+               anchor="mm")
+
+
 def ill_gaza(d, box):
     x0, y0, x1, y1 = box
     d.rectangle(box, fill=(13, 24, 48, 255))
@@ -225,7 +351,10 @@ def ill_gaza(d, box):
               fill=(255, 214, 130, 255))
     d.polygon([(x0 + 280, y1 - 12), (x0 + 200, y0 + 10), (x0 + 222, y0 + 10), (x0 + 300, y1 - 12)],
               fill=(255, 214, 130, 255))
-    d.ellipse([x0 + 148, y0 + 24, x0 + 164, y0 + 40], fill=(255, 150, 60, 255))
+    # v8: bigger explosion glow so the night raid reads at a glance
+    d.ellipse([x0 + 140, y0 + 14, x0 + 172, y0 + 46], fill=(255, 120, 30, 255))
+    d.ellipse([x0 + 147, y0 + 21, x0 + 165, y0 + 39], fill=(255, 190, 80, 255))
+    d.ellipse([x0 + 152, y0 + 26, x0 + 160, y0 + 34], fill=(255, 240, 180, 255))
     d.rectangle([x0, y1 - 12, x1, y1], fill=(24, 20, 16, 255))
     for (bx, bw, bh) in [(10, 36, 14), (56, 28, 10), (94, 42, 16), (146, 30, 12),
                          (186, 40, 14), (236, 32, 10), (276, 36, 12)]:
@@ -235,11 +364,12 @@ def ill_gaza(d, box):
 def ill_gta(d, box):
     x0, y0, x1, y1 = box
     import math
-    bands = [(255, 143, 171, 255), (255, 178, 120, 255), (255, 214, 140, 255), (255, 236, 180, 255)]
+    # v8: deeper, hotter sunset so the rollout panel pops next to the hero
+    bands = [(244, 118, 158, 255), (255, 168, 105, 255), (255, 208, 125, 255), (255, 232, 170, 255)]
     bh = (y1 - y0) // 4
     for i, c in enumerate(bands):
         d.rectangle([x0, y0 + i * bh, x1, y0 + (i + 1) * bh], fill=c)
-    d.ellipse([x0 + 145, y0 + 6, x0 + 175, y0 + 36], fill=(255, 240, 190, 255))
+    d.ellipse([x0 + 143, y0 + 4, x0 + 177, y0 + 38], fill=(255, 236, 180, 255))
     for (tx, tw, th) in [(6, 28, 22), (40, 22, 30), (68, 30, 18), (250, 28, 26), (284, 24, 20)]:
         d.rectangle([x0 + tx, y1 - th, x0 + tx + tw, y1], fill=(88, 52, 110, 255))
         for wy in range(y1 - th + 6, y1 - 4, 11):
@@ -283,14 +413,23 @@ def ill_cyclone(d, box):
 
 
 def ill_icj(d, box):
-    """World Court, The Hague: pediment + columns."""
+    """World Court, The Hague: pediment + columns.
+    v8: gold sun behind the pediment, warm ivory columns and gold side
+    accents — the verdict panel now glows instead of sitting flat navy.
+    (All drawing stays inside the 48px box; no rays cross the border.)"""
     x0, y0, x1, y1 = box
     d.rectangle(box, fill=(13, 24, 48, 255))
+    # gold sun in the sky, top right of the courthouse
+    d.ellipse([x0 + 266, y0 + 3, x0 + 284, y0 + 21], fill=(255, 205, 80, 255))
+    # gold side accents framing the courthouse
+    d.rectangle([x0 + 70, y0 + 8, x0 + 73, y0 + 44], fill=(201, 162, 39, 255))
+    d.rectangle([x0 + 250, y0 + 8, x0 + 253, y0 + 44], fill=(201, 162, 39, 255))
     d.polygon([(x0 + 96, y0 + 4), (x0 + 228, y0 + 4), (x0 + 162, y0 + 16)],
-              fill=(235, 230, 220, 255))
+              fill=(240, 228, 200, 255))
     for cx in (100, 128, 156, 184, 212):
-        d.rectangle([x0 + cx, y0 + 18, x0 + cx + 10, y1 - 5], fill=(235, 230, 220, 255))
-    d.rectangle([x0, y1 - 5, x1, y1], fill=(235, 230, 220, 255))
+        d.rectangle([x0 + cx, y0 + 18, x0 + cx + 10, y1 - 5], fill=(240, 228, 200, 255))
+    d.rectangle([x0, y1 - 5, x1, y1], fill=(240, 228, 200, 255))
+    d.rectangle([x0, y1 - 8, x1, y1 - 5], fill=(176, 58, 46, 255))
 
 
 def ill_cop31(d, box):
@@ -381,13 +520,14 @@ def ill_colombia(d, box):
 
 # ---------------- panels ----------------
 
-def panel(d, box, n, tag, headline, body, ill, head_size=22, body_size=13, ill_h=72):
+def panel(d, box, n, tag, headline, body, ill, head_size=22, body_size=13, ill_h=72,
+          bg=(255, 255, 255, 255), kicker_size=13, badge_r=11):
     x0, y0, x1, y1 = box
-    d.rectangle(box, fill=(255, 255, 255, 255), outline=(60, 55, 45, 255), width=2)
+    d.rectangle(box, fill=bg, outline=(60, 55, 45, 255), width=2)
     ill(d, (x0 + 2, y0 + 2, x1 - 2, y0 + 2 + ill_h))
     ty = y0 + 2 + ill_h + 5
-    kicker(d, x0 + 34, ty, tag)
-    num_badge(d, x0 + 16, ty + 7, n)
+    kicker(d, x0 + 34, ty, tag, size=kicker_size)
+    num_badge(d, x0 + 16, ty + 7, n, r=badge_r)
     ty += 18
     ty = para(d, x0 + 10, ty, headline, F_SERIF_B(head_size), INK, x1 - x0 - 20,
               head_size + 2)
@@ -423,7 +563,7 @@ PANELS_MID = [
      "Red alert as the storm strengthens; 200,000 marked to evacuate, "
      "landfall Friday.",
      ill_cyclone),
-    (6, "LAW  ·  THE HAGUE", "Myanmar guilty of Rohingya genocide",
+    (6, "LAW  ·  THE HAGUE", "Myanmar guilty of Rohingya genocide (9–6)",
      "The ICJ finds genocidal intent in 2017; ~10,000 killed, 730,000 "
      "fled. Final and binding.",
      ill_icj),
@@ -478,39 +618,44 @@ ALSO = [
     (26, "Trump defers Iran decision to next year"),
     (27, "UN: no state OK needed to form a group"),
     (28, "Oil steadies near $92; gold at 14-month low"),
-    (29, "Spain: police clash with strikers"),
+    (29, "Berlin allies pledge €70bn Ukraine aid"),
     (30, "Banxico minutes point to long rate pause"),
     (31, "Ukraine imposes emergency power cuts"),
     (32, "Senate rejects bid to curb Iran war, 51-48"),
     (33, "Bitcoin ETFs shed $2.9bn in November"),
-    (34, "Zelensky urges US to lift Starshield limits"),
-    (35, "Fiji declares disaster over El Niño drought"),
+    (34, "Somalia expels UAE ambassador"),
+    (35, "Tonga declares 27-day drought emergency"),
     (36, "Chow reshuffles Toronto team in 2nd term"),
     (37, "Indonesia passes asset-seizure law, Rp1bn threshold"),
     (38, "US–Philippines $2bn+ defence pact; $12bn Boeing deal"),
     (39, "California braces for atmospheric river"),
-    (40, "UNHCR halts refugee registration in Malaysia"),
-    (41, "Bolivia El Niño emergency: 78,000 families hit"),
+    (40, "Mongolia MPs accept president's resignation"),
+    (41, "Dow plunges 1,101 points"),
     (42, "Kenya floods kill six, displace hundreds"),
     (43, "Las Vegas GP practice opens on the Strip"),
 ]
 
-# Region counts v6: 12 ALSO drops + 1 rewrite re-counted (ME 4, AM 13,
-# AS 10, EU 5, AF 3, OC 2, WO 6 = 43). Drops: ME 3 (#13, #15, #36),
-# EU 5 (#14, #18, #26, #31, #32), AM 3 (#20, #25, #33), OC 1 (#22);
-# adds: AS 2, WO 2, EU 2, AF 2, AM 4. See README for the per-item map.
+# Region counts v9: #34 Somalia is AFRICA (was EUROPE as Starshield).
+# v8 was ME 4, AM 13, AS 10, EU 5, AF 3, OC 2, WO 6 = 43;
+# v9 is ME 4, AM 13, AS 10, EU 4, AF 4, OC 2, WO 6 = 43.
+# Per-item map: ME = panels 2, 9 + ALSO 16, 23; AM = panels 3, 4, 12 +
+# ALSO 17, 19, 25, 26, 30, 32, 36, 39, 41, 43; AS = panels 1, 5, 6, 10 +
+# ALSO 14, 15, 21, 24, 37, 40; EU = panel 8 + ALSO 13, 29, 31;
+# AF = ALSO 18, 22, 34, 42; OC = panel 11 + ALSO 35;
+# WO = panel 7 + ALSO 20, 27, 28, 33, 38.
 REGIONS = [("MIDDLE EAST 4", (176, 58, 46, 255)), ("AMERICAS 13", (31, 97, 141, 255)),
-           ("ASIA 10", (183, 149, 11, 255)), ("EUROPE 5", (46, 64, 87, 255)),
-           ("AFRICA 3", (147, 81, 22, 255)), ("OCEANIA 2", (17, 122, 101, 255)),
+           ("ASIA 10", (183, 149, 11, 255)), ("EUROPE 4", (46, 64, 87, 255)),
+           ("AFRICA 4", (147, 81, 22, 255)), ("OCEANIA 2", (17, 122, 101, 255)),
            ("WORLD 6", (97, 106, 107, 255))]
 
-# Suneung + Australia numbers moved to panels; replaced by Bolivia 78,000
-# and the US-Philippines $2bn+ pact (both verified 19 Nov items).
+# v9: GTA stat 15.9m (17 Nov) -> 19.1m (Sensor Tower, Thu morning 19 Nov);
+# Bolivia 78,000 stat dropped with ALSO #41 -> "1,101" Dow points lost,
+# echoing the new ALSO #41 (same echo pattern as Bolivia before it).
 STATS = [("$81.3bn", "Anthropic IPO, largest ever"),
-         ("15.9m", "GTA VI pre-orders banked"),
+         ("19.1m", "GTA VI pre-orders banked"),
          ("200,000", "Akvan evacuations planned"),
          ("$120bn", "COP31 goal cut"),
-         ("78,000", "Bolivia families hit"),
+         ("1,101", "Dow points lost"),
          ("$2bn+", "US–Philippines pact")]
 
 # (n, lon, lat, colour, dx, dy) — dx/dy nudge badges that would collide.
@@ -542,7 +687,7 @@ def build():
            fill=(255, 255, 255, 255))
     d.text((14, 64), "Every story on this page happened, or was first reported, on this day.",
            font=F_SERIF(13), fill=(200, 210, 235, 255))
-    d.text((14, 80), "TOP OF THE DAY — ICJ FINDS MYANMAR GUILTY OF GENOCIDE  ·  COP31'S FINAL 48 HOURS  ·  TRUMP WEIGHS IRAN STRIKES",
+    d.text((14, 80), "TOP OF THE DAY — THREE LEADERS MEET IN SHENZHEN  ·  ICJ FINDS MYANMAR GUILTY OF GENOCIDE  ·  COP31 DRAFT DROPS $120BN",
            font=F_SANS_B(11), fill=GOLD)
     d.rectangle([922, 8, 1010, 50], fill=GOLD)
     d.text((966, 11), "19", font=F_SANS_B(24), fill=NAVY_D, anchor="ma")
@@ -568,45 +713,57 @@ def build():
                anchor="mm")
         x += w
 
-    # ---- story panels: 4 rows ----
+    # ---- story panels: hero band (row 1) + 3 rows ----
+    # v8 hero band (170px tall): panel 1 is 460px wide with a 24px one-line
+    # headline, a warm cream tint and a 3px gold border; panels 2-3 are
+    # 263px wide in the same band. Rows 2-4 keep the 3x325px grid at 147px
+    # (4px gaps now, was 5px). All story text identical to v7.
+    (n1, tag1, head1, body1, _ill1) = PANELS_TOP[0]
+    panel(d, (14, 138, 474, 308), n1, tag1, head1, body1, ill_shenzhen_hero,
+          head_size=24, body_size=13, ill_h=84, bg=(255, 244, 220, 255),
+          kicker_size=14)
+    d.rectangle([14, 138, 474, 308], outline=GOLD, width=3)
+    for (n, tag, head, body, ill), cx in zip(PANELS_TOP[1:], [479, 747]):
+        panel(d, (cx, 138, cx + 263, 308), n, tag, head, body, ill,
+              head_size=21, body_size=13, ill_h=48)
     cols = [14, 349, 684]
     cw = 325
-    rows = [(140, 158, PANELS_TOP, 21, 13, 48), (303, 147, PANELS_MID, 19, 12, 48),
-            (455, 147, PANELS_LOW, 19, 12, 48), (607, 147, PANELS_ROW4, 19, 12, 48)]
+    rows = [(312, 147, PANELS_MID, 19, 12, 48), (463, 147, PANELS_LOW, 19, 12, 48),
+            (614, 147, PANELS_ROW4, 19, 12, 48)]
     for (ry, rh, panels, hs, bs, ih) in rows:
         for (n, tag, head, body, ill), cx in zip(panels, cols):
             panel(d, (cx, ry, cx + cw, ry + rh), n, tag, head, body, ill,
                   head_size=hs, body_size=bs, ill_h=ih)
 
-    # ---- stats strip — rules 760/800, numbers 24px ----
-    d.line([14, 760, 1010, 760], fill=GOLD, width=3)
-    d.line([14, 800, 1010, 800], fill=GOLD, width=3)
+    # ---- stats strip — rules 765/805, numbers 24px (v7: 760/800) ----
+    d.line([14, 765, 1010, 765], fill=GOLD, width=3)
+    d.line([14, 805, 1010, 805], fill=GOLD, width=3)
     sx = 14
     for num, cap in STATS:
         w = (W - 28) // 6
-        d.text((sx + w / 2, 764), num, font=F_SERIF_B(24), fill=NAVY, anchor="ma")
-        d.text((sx + w / 2, 788), cap, font=F_SANS(10), fill=GREY, anchor="ma")
+        d.text((sx + w / 2, 768), num, font=F_SERIF_B(24), fill=NAVY, anchor="ma")
+        d.text((sx + w / 2, 792), cap, font=F_SANS(10), fill=GREY, anchor="ma")
         sx += w
 
-    # ---- bottom: map + also list ----
-    d.text((14, 808), "WHERE IT HAPPENED", font=F_SANS_B(14), fill=RED)
-    d.line([14, 824, 392, 824], fill=RED, width=2)
-    ll = draw_map(d, (14, 828, 392, 952))
+    # ---- bottom: map + also list (v7: headers 808, map/ALSO from 828) ----
+    d.text((14, 812), "WHERE IT HAPPENED", font=F_SANS_B(14), fill=RED)
+    d.line([14, 828, 392, 828], fill=RED, width=2)
+    ll = draw_map(d, (14, 832, 392, 952))
     for (n, lon, lat, col, dx, dy) in PINS:
         px, py = ll(lon, lat)
         num_badge(d, int(px + dx), int(py + dy), n, r=10)
     d.text((14, 958), "Numbered pins mark stories 1–12.",
            font=F_SANS(11), fill=GREY)
 
-    d.text((404, 808), "ALSO ON THURSDAY 19 NOVEMBER  —  31 MORE STORIES",
+    d.text((404, 812), "ALSO ON THURSDAY 19 NOVEMBER  —  31 MORE STORIES",
            font=F_SANS_B(13), fill=RED)
-    d.line([404, 824, 1010, 824], fill=RED, width=2)
+    d.line([404, 828, 1010, 828], fill=RED, width=2)
     f_item = F_SANS(10)
     for i, (n, txt) in enumerate(ALSO):
         col = i // 16
         row = i % 16
         ix = 404 + col * 306
-        iy = 828 + row * 11
+        iy = 832 + row * 11
         d.text((ix, iy), f"{n}. {txt}", font=f_item, fill=INK)
     # footer: sources + date check on one line (10px, 984px of 996).
     # Names the four newly excluded items (Gaza crossing, Carney, Australia
@@ -618,7 +775,7 @@ def build():
     footer = ("Sources: Reuters, AP, AFP.  "
               "DATE CHECK — out (18 Nov): Voyager, EU €45bn, Fed minutes, Van Gogh, Gaza crossing, Carney, Australia sanctions; "
               "(17 Nov): N. Korea, Nvidia H200, Deutsche $582m.")
-    d.text((14, 1010), footer, font=F_SANS(10), fill=GREY)
+    d.text((14, 1012), footer, font=F_SANS(10), fill=GREY)
     # self-checks: no ALSO line may spill into the next column; footer must fit
     for (n, txt) in ALSO:
         w = d.textlength(f"{n}. {txt}", font=f_item)
@@ -631,8 +788,8 @@ def build():
           + d.textlength(utc_items, font=F_SANS(10)))
     if uw > 982:
         print(f"OVERFLOW utc strip: {uw:.0f}px")
-    subhead = ("TOP OF THE DAY — ICJ FINDS MYANMAR GUILTY OF GENOCIDE  ·  COP31'S FINAL 48 HOURS  ·  "
-               "TRUMP WEIGHS IRAN STRIKES")
+    subhead = ("TOP OF THE DAY — THREE LEADERS MEET IN SHENZHEN  ·  ICJ FINDS MYANMAR GUILTY OF GENOCIDE  ·  "
+               "COP31 DRAFT DROPS $120BN")
     sw = d.textlength(subhead, font=F_SANS_B(11))
     if sw > 990:
         print(f"OVERFLOW subhead: {sw:.0f}px")
