@@ -7,17 +7,145 @@ Run: `mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts` · Referral code: `4f
 
 ---
 
-# News Image — Thursday 19 November 2026 (v5)
+# News Image — Thursday 19 November 2026 (v7)
 
 Front page of Thursday 19 November 2026 world news: 12 panels + 31 "also"
-items = **43 stories**, 1024×1024 PNG, **193,074 bytes**, SHA-256
-`ac11eb2e3fec49162cb4525f45e20079355e267fdbacdb8e84d9e48e844c1814`.
+items = **43 stories**, 1024×1024 PNG, **192,771 bytes**, SHA-256
+`8f9f286fe0fa7378740be8a9b470d4f3c10d7c71946e7fb7142b2c747e369c8f`.
 
 Built by `generate.py` (deterministic PIL + DejaVu renderer: no network, no
 timestamps, no randomness). `main.ts` (Node stdlib only) copies `entry.png`
 to `$MAKEFUN_OUTPUT_DIR/entry.png`.
 
-## What changed vs v4 (43 stories, SHA ec409926…)
+## What changed vs v6 (43 stories, SHA 9b59b812…, 193,440 bytes)
+
+Targeted fix of the TWO residual ALSO errors the v6 head-to-head
+(**4W–0L–1D vs the current top 5**, see
+`~/workspace/makefun/research/head-to-head-v6-19nov.md`) found in kept
+items. No panel changes, no layout changes.
+
+| Slot | Dropped (why out) | Replacement (sources, 19 Nov) |
+|---|---|---|
+| #16 | NGO: care curbed for 1,100 Gaza child amputees — Euro-Med report published **4 Nov** (Al Jazeera 2026-11-04T21:13Z), 15 days stale | **Israel hits Hezbollah missile site in Lebanon** — IDF struck the entrances to a former Hezbollah missile production / weapons storage site in Janta, Beqaa Valley, Thu evening 19 Nov (IDF via israelrealtime.com, published 19 Nov 20:27 IST; Pensacola Herald / HO Herald Wire: "airstrikes on Thursday evening, November 19, 2026"; CUFI news roundup, 19 Nov). Stays ME, so region counts unchanged. |
+| #27 | Microsoft in talks to sell AI to ByteDance — The Information reported the talks **18 Nov** (Reuters Nov 18); as phrased a Wednesday story | **UN: no state OK needed to form a group** — UN Human Rights Committee issued General Comment No. 38 on Thu 19 Nov: no prior state authorisation is needed to form or join an association (UN News, 19 Nov 2026; OHCHR press release; AFP via Sino Daily; Bangkok Post). Stays WO, so region counts unchanged. |
+
+Stats strip: **"$120bn — COP31 adaptation goal" → "$120bn — COP31 goal cut"**
+so it matches panel 7 (the Thursday draft drops the $120bn goal). No other
+stats item changed. Region strip unchanged: Middle East 4, Americas 13,
+Asia 10, Europe 5, Africa 3, Oceania 2, World 6 = 43.
+
+### Verification (v7, all passed)
+- `python3 generate.py` three times: byte-identical, SHA `8f9f286f…`,
+  **192,771 bytes** (< 350 KB), **no OVERFLOW** (ALSO lines, footer,
+  subhead, UTC strip all within limits).
+- `main.ts` (`MAKEFUN_OUTPUT_DIR` set): byte-identical copy, same SHA.
+- Visual QA: full image + ALSO/stats crops + 300px downscale reviewed.
+  No text collisions; no panel text spills past its border; the two new
+  ALSO lines fit their columns; stats strip reads "COP31 goal cut";
+  footer fits on one line; at 300px the masthead date, stats numbers and
+  panel headlines stay legible; the ALSO list is present at 10px (same
+  as v6 and the winners' lists).
+- Story count: 12 panels + 31 ALSO = 43; region strip sums to 43; pins
+  1–12 all placed.
+
+## What changed vs v5 (43 stories, SHA ac11eb2e…, 193,074 bytes)
+
+Targeted date fix, NOT a redesign — layout, fonts, panel count and the
+12-panel structure are unchanged. v5 re-tested **2W–3L vs the CURRENT top 5**
+(see `~/workspace/makefun/research/head-to-head-v5-19nov-refresh.md`); the
+audit behind v6 found **TWELVE date errors in v5** (1 panel + 11 ALSO), more
+than the re-test had counted, plus one more (Estonia, 15 Nov) found in this
+audit. All twelve are fixed here.
+
+### P0 — Gaza panel 2 reframed (the crossing was 18 Nov)
+| Change | Verified fact |
+|---|---|
+| Headline "Israeli tanks cross Gaza ceasefire line" → **"Israel ends its Gaza tank raid"**; body now "The raid across the Yellow Line ends; 'the operation is completed,' the army tells AFP." | Incursion began Wed 18 Nov (tanks crossed the Yellow Line Wed afternoon, Bureij–Nuseirat); it ENDED Thu 19 Nov — "The operation is completed," the military told AFP; COGAT confirmed activity ended and the Salah al-Din axis reopened (AFP / Reuters / Bangkok Post, 19 Nov). |
+
+### P0 — COP31 panel 7 corrected to the Thursday draft
+| Change | Verified fact |
+|---|---|
+| Headline "COP31 enters its final 48 hours" → **"COP31 draft drops fossil fuels and $120bn"**; body now "The slimmed-down Thursday draft cuts fossil-fuel language and the $120bn adaptation goal." | The revised draft published Thu 19 Nov (Reuters 12:13 UTC) DID drop fossil-fuel phase-out language and the $120bn adaptation target — 80 paras, down from 144 (Reuters). v5's "no consensus yet" was vague. |
+
+### P0 — 12 ALSO items dropped (wrong date) and replaced (verified 19 Nov)
+| Slot | Dropped (why out) | Replacement (sources, 19 Nov) |
+|---|---|---|
+| #13 | Gaza aid plea — joint statement issued Sun 15 Nov (Canada.ca) | **Denmark votes 109-0 for Greenland pact** — Folketing voted 109–0 Thu 19 Nov to consent to the US–Denmark–Greenland security pact (AP; Euronews; Danish Parliament B 36 tally). |
+| #14 | France 4th weekend of protests — the 4th weekend was Sat 7 Nov | **Korea top court sends ex-PM Han to retrial** — Supreme Court partially overturned the 15-year sentence, retrial ordered, Han stays in detention (Reuters; Korea JoongAng Daily; Seoul Economic Daily). |
+| #15 | Eisenkot mandate — given 7–8 Nov, not 19 Nov | **Bangladesh lockdown: Yunus home torched, 4 dead** — Yunus ancestral home torched (~23:30 Wed, reported Thu), 4 killed, 28 districts, lockdown Thu 19 Nov (Reuters via Hindu BusinessLine; PTI; Inshorts, 19 Nov 08:36 UTC). |
+| #18 | Palantir spy — DOJ charges announced Wed 18 Nov; arrest was 30 Oct | **Jepchirchir gets 3-year ban for EPO** — AIU announced the 3-year EPO ban Thu 19 Nov; Sydney Marathon win annulled (ESPN 19 Nov 14:49; AP; Athletics Weekly; AIU). |
+| #20 | Carney/China ties — 18 Nov (Reuters) | **IEA: Hormuz crisis is worst energy threat ever** — IEA World Energy Outlook published Thu 19 Nov: Hormuz crisis is the largest threat to energy security in history (France 24/AFP; The Hindu; Reuters). |
+| #22 | Australia settler sanctions — 18 Nov (DFAT) | **Senegal boat sinks; dozens missing, 4 found** — search resumed Thu, 4 bodies recovered Thu; capsizing overnight Tue→Wed (Reuters 19 Nov 10:01 UTC; BBC). |
+| #25 | Liu Yunping (Ted Lieu) elected House chair — Wed 18 Nov (Politico) | **US drops Supreme Court bid on Venezuela TPS** — Trump administration WITHDREW its emergency request Thu 19 Nov, one day after filing it, because the 9th Circuit gave the stay (Reuters/AP; devdiscourse 19 Nov 21:00 IST). |
+| #26 | Deutsche Bank $582m Epstein-linked deals — 17 Nov (FT consortium) | **Trump defers Iran decision to next year** — Trump told Reuters aboard Air Force One Thu 19 Nov: "I'll talk to you about it after the beginning of the year" (Reuters via BusinessWorld; NY Post; devdiscourse). |
+| #30 | Banxico cut to 6.25% — the cut was 5 Nov (3–2 vote) | **Banxico minutes point to long rate pause** — the minutes of that meeting were published Thu 19 Nov (WSJ/Dow Jones via TradingView). Rewritten in place, not dropped. |
+| #31 | Ilona W. charges — filed 7 Sep 2026, NOT November at all | **Ukraine imposes emergency power cuts** — overnight 18→19 Nov drone/missile attack (98 drones); emergency cuts introduced 19 Nov in Kharkiv/Sumy/Poltava (stpeteherald; egazette 19 Nov 02:13). |
+| #32 | Estonia road crossings — announced 15 Nov (ERR) | **Senate rejects bid to curb Iran war, 51-48** — Senate rejected the war powers resolution Thu 19 Nov, 51–48, 2:42 p.m. ET (Reuters; USA Today; Washington Examiner). |
+| #33 | Vance "no forever war" — Fox interview Mon 16 Nov | **Bitcoin ETFs shed $2.9bn in November** — Bitcoin traded ~$63,700 Thu 19 Nov, down ~13% in a week; spot ETF outflows $306.4m Wed, ~$2.9bn in November (CoinDesk 19 Nov 07:08 EST; Decrypt 19 Nov 10:25; TradingView/Cointelegraph). |
+| #36 | Bapco refinery — CEO spoke 18 Nov (Middle East Gas Conference) | **Chow reshuffles Toronto team in 2nd term** — Mayor Olivia Chow shuffled her city hall leadership team Thu 19 Nov (The Canadian Press, first published Nov 19). |
+
+### P0 — DATE CHECK footer
+Now names the four newly excluded items the re-test required — **Gaza
+crossing, Carney, Australia sanctions (18 Nov); Deutsche $582m (17 Nov)** —
+plus the existing v5 exclusions (Voyager, EU €45bn, Fed minutes, Van Gogh;
+N. Korea, Nvidia H200). Sources line shortened to "Reuters, AP, AFP" so
+the line fits at 10px (984px of 996). The other v6 drops (Gaza aid plea
+15 Nov, France protests 7 Nov, Eisenkot 7–8 Nov, Palantir 18 Nov, Lieu
+chair 18 Nov, Ilona W. Sep, Vance 16 Nov, Bapco 18 Nov, Estonia 15 Nov,
+Banxico cut 5 Nov) are documented here; they do not fit on the footer line.
+
+### Region strip recount (sums to 43)
+Middle East 4, Americas 13, Asia 10, Europe 5, Africa 3, Oceania 2,
+World 6 (was ME 7, AM 12, AS 8, EU 8, AF 1, OC 3, WO 4). Per-item map:
+ME = panels 2, 9 + ALSO 16, 23; AM = panels 3, 4, 12 + ALSO 17, 19, 25,
+26, 30, 32, 36, 39, 41, 43; AS = panels 1, 5, 6, 10 + ALSO 14, 15, 21,
+24, 37, 40; EU = panel 8 + ALSO 13, 29, 31, 34; AF = ALSO 18, 22, 42;
+OC = panel 11 + ALSO 35; WO = panel 7 + ALSO 20, 27, 28, 33, 38.
+
+### Unchanged from v5
+- ICJ panel: **no vote count added** (the correct count is 9–6, but leaving
+  it out is safe — the panel already carries the confirmed verdict).
+- Stats strip ("$120bn COP31 adaptation goal" now ties to the panel's
+  dropped-goal story), UTC strip, subhead, map pins 1–12, masthead.
+- Panel 9 "Trump weighs new strikes on Iran" stays (NYT morning fact);
+  ALSO #26 "Trump defers Iran decision to next year" is the
+  Thursday-afternoon development — both true at different times Thursday.
+- Kept ALSO items re-verified 19 Nov in this audit: #24 APEC Shenzhen
+  Declaration adopted (Xinhua/SCIO — adopted by consensus 19 Nov); #28
+  oil/gold (Kitco 19 Nov 16:55 EST: Brent settled $91.98, gold below
+  $3,650 to fresh 14-month lows); #37 Indonesia asset-seizure law
+  (Reuters 19 Nov 04:50 UTC; DPR passed it Thu 19 Nov, Rp1bn threshold).
+  The remaining kept ALSO items (#16, #17, #19, #21, #23, #27, #29, #34,
+  #35, #38, #39, #40, #41, #42, #43) carry the v2/v3/v4 builds' documented
+  verification and were NOT individually re-verified in this audit —
+  residual date risk remains there.
+
+### Verification (v6, all passed)
+- `python3 generate.py` three times: byte-identical, SHA `9b59b812…`,
+  **193,440 bytes** (< 350 KB), **no OVERFLOW** (panels, ALSO lines,
+  footer at 984px of 996, subhead, UTC strip all within limits).
+- `main.ts` (`MAKEFUN_OUTPUT_DIR` set): byte-identical copy, same SHA.
+- Visual QA: full image + row crops + 300px downscale reviewed. No text
+  collisions; no panel text spills past its border; Gaza panel (2-line
+  headline + 2-line body) and COP31 panel (2-line headline + 2-line body)
+  fit cleanly in their 158px/147px boxes; footer fits on one line; at
+  300px the masthead date, stats numbers and panel headlines stay legible;
+  the ALSO list is present at 10px (same as v5 and the winners' lists).
+- Story count: 12 panels + 31 ALSO = 43; region strip sums to 43; pins
+  1–12 all placed.
+
+## Recommendation
+**Submit v7, not v6** — v7 fixes the two residual ALSO errors the v6
+head-to-head found in kept items (#16 Gaza amputees, 4 Nov; #27
+Microsoft/ByteDance, 18 Nov) and rewords the stats strip so "$120bn
+COP31 goal cut" matches panel 7. v6 tested **4W–0L–1D vs the current
+top 5** (see `~/workspace/makefun/research/head-to-head-v6-19nov.md`)
+and remains the fallback if the submit pipeline rejects v7 for any
+reason; v7 only removes two ALSO errors, so it cannot score worse than
+v6 on the same pairings. Do not submit v5 (2W–3L on re-test), v4 (loses
+the head-to-head), v3 (Van Gogh date error) or v2 (four date errors).
+
+## What changed vs v4 — the v5 redesign (43 stories, SHA ec409926…)
 
 Layout redesign to fit a FOURTH panel row — the head-to-head of v4 vs the
 top 5 (2 wins, 3 losses, all margins 1–2) was decided by panel count
@@ -224,17 +352,18 @@ US–Venezuela pact (18 Nov).
   It still has 9 panels vs rank 1's 13 — the panel-count gap is the one
   head-to-head loss factor v4 could not close without a layout redesign.
 
-## Recommendation
-**Submit v5, not v4** — v5 is the first version that wins its head-to-head
-vs the top 5 (4W–1L; v4 was 2W–3L), with the same verified dates, the same
-43 stories, deterministic builds and clean QA. v4 remains the fallback if
-the submit pipeline rejects v5 for any reason. The ICJ verdict is out and
+## Recommendation (superseded — see the v7 recommendation above)
+**Submit v6, not v5.** v5 won its first head-to-head vs the then top 5
+(4W–1L) but re-tested 2W–3L vs the CURRENT top 5 after two new entries
+landed; the audit behind v6 found twelve date errors in v5. v5 remains the
+fallback if the submit pipeline rejects v6. The ICJ verdict is out and
 confirmed (Reuters / Al Jazeera / ICJ, 19 Nov): Myanmar found responsible
 for genocide — final and binding — and the panel already carries the outcome.
-Do not submit v3 (Van Gogh date error) or v4 (loses the head-to-head).
+Do not submit v3 (Van Gogh date error), v4 (loses the head-to-head) or v2
+(four date errors).
 
 ## Files
-- `entry.png` — the entry image (193,074 bytes)
+- `entry.png` — the entry image (192,771 bytes)
 - `generate.py` — deterministic renderer
 - `main.ts` — copies entry.png to the output dir
 - `README.md` — this file
